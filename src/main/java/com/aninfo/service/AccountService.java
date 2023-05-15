@@ -60,7 +60,7 @@ public class AccountService {
     @Transactional
     public Account deposit(Long cbu, Double sum) {
         if (sum <= 0) {
-            throw new DepositNegativeSumException("Cannot deposit negative sums");
+            throw new DepositNegativeSumException("Cannot deposit negative sums or 0");
         }
 
         if (sum >= 2000) {
@@ -84,6 +84,9 @@ public class AccountService {
         if (transaction.getType() == DEPOSIT) {
             account = deposit(cbu, transaction.getSum());
         } else if (transaction.getType() == WITHDRAWAL) {
+            if (transaction.getSum() <= 0) {
+                throw new InvalidTransactionTypeException("Cannot withdraw negative sums or 0");
+            }
             account = withdraw(cbu, transaction.getSum());
         } else throw new InvalidTransactionTypeException("Transaction needs to be DEPOSIT or WITHDRAWAL");
 
