@@ -1,6 +1,7 @@
 package com.aninfo;
 
 import com.aninfo.model.Account;
+import com.aninfo.model.Transaction;
 import com.aninfo.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -73,6 +74,28 @@ public class Memo1BankApp {
 	@PutMapping("/accounts/{cbu}/deposit")
 	public Account deposit(@PathVariable Long cbu, @RequestParam Double sum) {
 		return accountService.deposit(cbu, sum);
+	}
+
+	@PostMapping("/accounts/transaction")
+	@ResponseStatus(HttpStatus.CREATED)
+	public Transaction createTransaction(@RequestParam Long cbu, @RequestBody Transaction transaction) {
+		return accountService.createTransaction(cbu, transaction);
+	}
+
+	@GetMapping("/accounts/{cbu}/transactions")
+	public Collection<Transaction> getTransactions(@PathVariable Long cbu) {
+		return accountService.getTransactions(cbu);
+	}
+
+	@GetMapping("/accounts/transaction/{id}")
+	public ResponseEntity<Transaction> getTransaction(@PathVariable Long id) {
+		Optional<Transaction> transactionOptional = accountService.findTransactionById(id);
+		return ResponseEntity.of(transactionOptional);
+	}
+
+	@DeleteMapping("/accounts/transaction/{id}")
+	public void deleteTransaction(@PathVariable Long id) {
+		accountService.deleteTransactionById(id);
 	}
 
 	@Bean
